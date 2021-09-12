@@ -1,1 +1,19 @@
 <h1>{{ title }}</h1>
+
+<hr>
+
+<ul>
+  <p *ngIf="todos.length == 0"><strong>Você não tem tarefas.</strong></p>
+  <li *ngFor="let todo of todos">
+    {{ todo.id }}. {{ todo.title }}
+  </li>
+</ul>
+
+<hr>
+
+<fieldset>
+  <legend>Create new task</legend>
+  <label>Task: </label>
+  <input type="text" placeholder="Insert new task...">
+  <button>Save</button>
+</fieldset>

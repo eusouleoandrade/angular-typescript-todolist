@@ -5,15 +5,21 @@
 <ul>
   <p *ngIf="todos.length == 0"><strong>Você não tem tarefas.</strong></p>
   <li *ngFor="let todo of todos">
-    {{ todo.id }}. {{ todo.title }}
+    {{ todo.id }}. {{ todo.title }} -
+    <button (click)="remove(todo)">REMOVE</button> |
+    <button (click)="markAsDone(todo)" *ngIf="todo.done == false">DONE</button> 
+    <button (click)="markAsUnDone(todo)" *ngIf="todo.done">UNDONE</button>
   </li>
 </ul>
 
 <hr>
 
-<fieldset>
-  <legend>Create new task</legend>
-  <label>Task: </label>
-  <input type="text" placeholder="Insert new task...">
-  <button>Save</button>
-</fieldset>
+<form [formGroup]="form">
+  <fieldset>
+    <legend>Create new task</legend>
+    <label>Task: </label>
+    <input type="text" placeholder="Insert new task..." formControlName="title" maxlength="60" minlength="3">
+    <small *ngIf="form.controls.title.invalid && !form.controls.title.pristine">This field must contain between 3 and 60 characters.</small>
+    <button [disabled]="form.invalid" (click)="add()">Save</button>
+  </fieldset>
+</form>

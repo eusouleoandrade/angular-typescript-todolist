@@ -12,6 +12,7 @@ export class AppComponent {
   public title : string = "Todo List - Making your life easier";
   public todos : Todo[] = [];
   public form: FormGroup;
+  public formVisible : boolean = false;
 
   constructor(private fb: FormBuilder) {
     
@@ -31,6 +32,7 @@ export class AppComponent {
 
   clearForm(){
     this.form.reset();
+    this.formVisible = false;
   }
 
   remove(todo : Todo){

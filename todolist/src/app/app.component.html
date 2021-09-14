@@ -14,7 +14,11 @@
 
 <hr>
 
-<form [formGroup]="form">
+<p>
+  <button (click)="formVisible = true">Create new task</button>
+</p>
+
+<form [formGroup]="form" *ngIf="formVisible">
   <fieldset>
     <legend>Create new task</legend>
     <label>Task: </label>

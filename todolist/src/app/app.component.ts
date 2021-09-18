@@ -9,10 +9,10 @@ import { Todo } from 'src/models/todo.model';
 })
 export class AppComponent {
 
-  public title: string = "Todo List - Making your life easier";
+  public title: string = "Todo List | My tasks";
   public todos: Todo[] = [];
   public form: FormGroup;
-  public formVisible: boolean = false;
+  public mode: string = "list";
 
   constructor(private fb: FormBuilder) {
 
@@ -34,11 +34,11 @@ export class AppComponent {
     this.save();
 
     this.clearForm();
+    this.mode = "list";
   }
 
   clearForm() {
     this.form.reset();
-    this.formVisible = false;
   }
 
   remove(todo: Todo) {
@@ -55,7 +55,7 @@ export class AppComponent {
     this.save();
   }
 
-  markAsUnDone(todo: Todo) {
+  markAsUndone(todo: Todo) {
     todo.done = false;
     this.save();
   }
@@ -63,5 +63,9 @@ export class AppComponent {
   save() {
     const data = JSON.stringify(this.todos);
     localStorage.setItem('todos', data);
+  }
+
+  changeMode(mode: string){
+    this.mode = mode;
   }
 }

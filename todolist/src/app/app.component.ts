@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Todo } from 'src/models/todo.model';
+import { TodoService } from 'src/app/services/todo.service';
+import { TodoApiResponse } from 'src/responses/todoApi.response';
 
 @Component({
   selector: 'app-root',
@@ -14,16 +16,13 @@ export class AppComponent {
   public form: FormGroup;
   public mode: string = "list";
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private todoService: TodoService) {
 
     this.form = this.fb.group({
       title: ['', Validators.compose([Validators.minLength(3), Validators.maxLength(60), Validators.required])]
     });
 
-    const data = localStorage.getItem('todos');
-    if (data !== null) {
-      this.todos = JSON.parse(data);
-    }
+    this.getTodos();
   }
 
   add() {
@@ -65,7 +64,14 @@ export class AppComponent {
     localStorage.setItem('todos', data);
   }
 
-  changeMode(mode: string){
+  changeMode(mode: string) {
     this.mode = mode;
+  }
+
+  public getTodos() {
+
+    this.todoService.getTodos().subscribe((todoApiResponse: TodoApiResponse) => {
+      this.todos = todoApiResponse.data;
+    });
   }
 }

@@ -26,7 +26,7 @@ export class TodoService {
 
   // GetTodoList
   public getTodos(): Observable<TodoApiResponse> {
-    
+
     return this.httpClient.get<TodoApiResponse>(this.url)
       .pipe(retry(2), catchError(this.handleError));
   }
@@ -39,21 +39,21 @@ export class TodoService {
   }
 
   // PostTodo
-  public postCar(todo: Todo): Observable<Todo> {
+  public postTodo(todo: Todo): Observable<Todo> {
 
     return this.httpClient.post<Todo>(this.url, JSON.stringify(todo), this.httpOptions)
       .pipe(retry(2), catchError(this.handleError));
   }
 
   // PutTodo
-  public updateCar(todo: Todo): Observable<Todo> {
+  public updateTodo(todo: Todo): Observable<Todo> {
 
     return this.httpClient.put<Todo>(this.url + '/' + todo.id, JSON.stringify(todo), this.httpOptions)
       .pipe(retry(1), catchError(this.handleError));
   }
 
   // DeleteTodo
-  public deleteCar(todo: Todo) {
+  public deleteTodo(todo: Todo) {
 
     return this.httpClient.delete<Todo>(this.url + '/' + todo.id, this.httpOptions)
       .pipe(retry(1),catchError(this.handleError));
@@ -73,7 +73,6 @@ export class TodoService {
 
       // Error server side
       errorMessage = `Código do erro: ${error.status}, ` + `menssagem: ${error.message}`;
-
     }
 
     console.log(errorMessage);

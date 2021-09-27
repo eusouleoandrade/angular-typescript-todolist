@@ -1,6 +1,12 @@
-export class Todo{
+export class Todo {
 
-    constructor(public id : number, public title : string, public done : boolean) {
-                
+    public id: number;
+    public title: string;
+    public done: boolean;
+
+    constructor(title: string, done: boolean, id?: number) {
+        this.id = id === undefined ? 0 : id;
+        this.title = title;
+        this.done = done;
     }
 }

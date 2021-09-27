@@ -3,7 +3,7 @@
 <ul class="animated flipInX" *ngIf="mode=='list'">
   <p class="text-center" *ngIf="todos.length == 0"><small>You don't have any tasks today!</small></p>
   <li *ngFor="let todo of todos">
-    {{ todo.id }}. {{ todo.title }}
+    {{ todo.title }}
     <button *ngIf="!todo.done" (click)="markAsDone(todo)"><em class="far fa-check-circle"></em></button>
     <button *ngIf="todo.done" (click)="markAsUndone(todo)"><em class="fas fa-check-circle"></em></button>
     <button (click)="remove(todo)"><em class="far fa-trash-alt"></em></button>

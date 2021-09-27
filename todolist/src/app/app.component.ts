@@ -22,56 +22,64 @@ export class AppComponent {
       title: ['', Validators.compose([Validators.minLength(3), Validators.maxLength(60), Validators.required])]
     });
 
-    this.getTodos();
+    this.getAll();
   }
 
   add() {
+
     const title = this.form.controls['title'].value;
-    const id = this.todos.length + 1;
+    let todo = new Todo(title, false);
 
-    this.todos.push(new Todo(id, title, false));
-    this.save();
-
-    this.clearForm();
-    this.mode = "list";
+    this.todoService.postTodo(todo).subscribe(() => {
+      this.todos.push(todo);
+      this.clearForm();
+      this.mode = "list";
+      this.getAll();
+    });
   }
 
   clearForm() {
+
     this.form.reset();
   }
 
   remove(todo: Todo) {
-    const index = this.todos.indexOf(todo);
 
+    const index = this.todos.indexOf(todo);
     if (index !== -1) {
-      this.todos.splice(index, 1);
-      this.save();
+
+      this.todoService.deleteTodo(todo).subscribe(() => {
+        this.todos.splice(index, 1);
+      });
     }
   }
 
   markAsDone(todo: Todo) {
+
     todo.done = true;
-    this.save();
+    this.update(todo);
   }
 
   markAsUndone(todo: Todo) {
-    todo.done = false;
-    this.save();
-  }
 
-  save() {
-    const data = JSON.stringify(this.todos);
-    localStorage.setItem('todos', data);
+    todo.done = false;
+    this.update(todo);
   }
 
   changeMode(mode: string) {
+
     this.mode = mode;
   }
 
-  public getTodos() {
+  public getAll() {
 
     this.todoService.getTodos().subscribe((todoApiResponse: TodoApiResponse) => {
       this.todos = todoApiResponse.data;
     });
+  }
+
+  public update(todo: Todo) {
+
+    this.todoService.updateTodo(todo).subscribe();
   }
 }

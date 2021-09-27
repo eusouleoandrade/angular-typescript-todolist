@@ -17,16 +17,14 @@ export class AppComponent {
   public mode: string = "list";
 
   constructor(private fb: FormBuilder, private todoService: TodoService) {
-
     this.form = this.fb.group({
       title: ['', Validators.compose([Validators.minLength(3), Validators.maxLength(60), Validators.required])]
     });
 
-    this.getAll();
+    this.getTodos();
   }
 
-  add() {
-
+  public add() {
     const title = this.form.controls['title'].value;
     let todo = new Todo(title, false);
 
@@ -34,52 +32,44 @@ export class AppComponent {
       this.todos.push(todo);
       this.clearForm();
       this.mode = "list";
-      this.getAll();
+      this.getTodos();
     });
   }
 
-  clearForm() {
-
+  public clearForm() {
     this.form.reset();
   }
 
-  remove(todo: Todo) {
-
+  public remove(todo: Todo) {
     const index = this.todos.indexOf(todo);
-    if (index !== -1) {
 
+    if (index !== -1) {
       this.todoService.deleteTodo(todo).subscribe(() => {
         this.todos.splice(index, 1);
       });
     }
   }
 
-  markAsDone(todo: Todo) {
-
+  public markAsDone(todo: Todo) {
     todo.done = true;
-    this.update(todo);
+    this.todoService.updateTodo(todo).subscribe();
   }
 
-  markAsUndone(todo: Todo) {
-
+  public markAsUndone(todo: Todo) {
     todo.done = false;
-    this.update(todo);
+    this.todoService.updateTodo(todo).subscribe();
   }
 
-  changeMode(mode: string) {
-
+  public changeScreenMode(mode: string) {
     this.mode = mode;
   }
 
-  public getAll() {
-
+  public getTodos() {
     this.todoService.getTodos().subscribe((todoApiResponse: TodoApiResponse) => {
       this.todos = todoApiResponse.data;
     });
   }
 
-  public update(todo: Todo) {
-
-    this.todoService.updateTodo(todo).subscribe();
+  public update(todo : Todo){
   }
 }

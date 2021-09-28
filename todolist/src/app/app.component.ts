@@ -11,65 +11,108 @@ import { TodoApiResponse } from 'src/responses/todoApi.response';
 })
 export class AppComponent {
 
-  public title: string = "Todo List | My tasks";
+  public title: string = "..... Todo List .....";
   public todos: Todo[] = [];
   public form: FormGroup;
-  public mode: string = "list";
+  public screenMode: string = "list"; // list, edit, add
+  private todo = {} as Todo;
 
   constructor(private fb: FormBuilder, private todoService: TodoService) {
+
     this.form = this.fb.group({
       title: ['', Validators.compose([Validators.minLength(3), Validators.maxLength(60), Validators.required])]
     });
+  }
+
+  ngOnInit() {
 
     this.getTodos();
   }
 
-  public add() {
-    const title = this.form.controls['title'].value;
-    let todo = new Todo(title, false);
+  // Get all
+  public getTodos() {
 
-    this.todoService.postTodo(todo).subscribe(() => {
-      this.todos.push(todo);
-      this.clearForm();
-      this.mode = "list";
-      this.getTodos();
+    this.todoService.getTodos().subscribe((todoApiResponse: TodoApiResponse) => {
+      this.todos = todoApiResponse.data;
+      
+      // Order by id
+      this.todos.sort((a, b) => {
+        return a.id - b.id;
+      });
     });
   }
 
-  public clearForm() {
-    this.form.reset();
-  }
+  // Save - Add or Update
+  public saveTodo() {
 
-  public remove(todo: Todo) {
-    const index = this.todos.indexOf(todo);
+    const title = this.form.controls['title'].value;
 
-    if (index !== -1) {
-      this.todoService.deleteTodo(todo).subscribe(() => {
-        this.todos.splice(index, 1);
+    if (this.todo.id === undefined) {
+
+      this.todo.title = title;
+      this.todo.done = false;
+
+      this.todoService.postTodo(this.todo).subscribe(() => {
+        this.cleanForm();
+      });
+    } else {
+
+      this.todo.title = title;
+
+      this.todoService.updateTodo(this.todo).subscribe(() => {
+        this.cleanForm();
       });
     }
   }
 
-  public markAsDone(todo: Todo) {
-    todo.done = true;
-    this.todoService.updateTodo(todo).subscribe();
-  }
+  // Delete todo
+  public deleteTodo(todo: Todo) {
 
-  public markAsUndone(todo: Todo) {
-    todo.done = false;
-    this.todoService.updateTodo(todo).subscribe();
-  }
-
-  public changeScreenMode(mode: string) {
-    this.mode = mode;
-  }
-
-  public getTodos() {
-    this.todoService.getTodos().subscribe((todoApiResponse: TodoApiResponse) => {
-      this.todos = todoApiResponse.data;
+    this.todoService.deleteTodo(todo).subscribe(() => {
+      this.getTodos();
     });
   }
 
-  public update(todo : Todo){
+  // Clean Form
+  public cleanForm() {
+
+    this.getTodos();
+    this.form.reset();
+    this.todo = {} as Todo;
+    this.screenMode = "list";
+  }
+
+  // Change screen mode
+  public changeScreenMode(mode: string) {
+    this.screenMode = mode;
+  }
+
+  // Set Done
+  public markAsDone(todo: Todo) {
+
+    todo.done = true;
+    this.todoService.updateTodo(todo).subscribe(() => {
+      this.getTodos();
+    });
+  }
+
+  // Set Undone
+  public markAsUndone(todo: Todo) {
+
+    todo.done = false;
+    this.todoService.updateTodo(todo).subscribe(() => {
+      this.getTodos();
+    });
+  }
+
+  // Edit todo
+  public editTodo(todo: Todo) {
+
+    this.todo.id = todo.id;
+    this.todo.title = todo.title;
+    this.todo.done = todo.done;
+
+    this.form.controls['title'].setValue(todo.title);
+    this.screenMode = 'edit';
   }
 }

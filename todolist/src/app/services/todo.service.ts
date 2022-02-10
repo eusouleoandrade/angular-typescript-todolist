@@ -56,7 +56,7 @@ export class TodoService {
   public deleteTodo(todo: Todo) {
 
     return this.httpClient.delete<Todo>(this.url + '/' + todo.id, this.httpOptions)
-      .pipe(retry(1),catchError(this.handleError));
+      .pipe(retry(1), catchError(this.handleError));
   }
 
   // Error handling

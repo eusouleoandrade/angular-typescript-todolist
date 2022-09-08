@@ -11,7 +11,7 @@ import { TodoApiResponse } from 'src/responses/todoApi.response';
 export class TodoService {
 
   // Set url
-  private readonly url: string = 'https://localhost:7277/api/v2/todo';
+  private readonly url: string = 'https://localhost:7277/api/v1/todo';
 
   public todos: Todo[] = [];
 
